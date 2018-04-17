@@ -2,7 +2,7 @@
 
 import os
 import re
-from .data_processing import DataProcess
+from data_processing import DataProcess
 
 
 class FilterData(DataProcess):
@@ -11,7 +11,7 @@ class FilterData(DataProcess):
     """
 
     def __init__(self, input_path, output_path, backup_path):
-        super(DataProcess, self).__init__(input_path, output_path, backup_path)
+        super(FilterData, self).__init__(input_path, output_path, backup_path)
 
     def filter_data(self):
         """
@@ -20,7 +20,7 @@ class FilterData(DataProcess):
         """
         retain_indexes = [16, 19, 21, 23, 28, 29, 40, 42, 45]
         retain_list = []
-        print("Starting to filter the raw data from {}".format(self.input_path))
+        self.logger.info("Starting to filter the raw data from {}".format(self.input_path))
         file_list = self.check_path(self.input_path)
         if file_list:
             status = self.create_output_path()
@@ -58,15 +58,15 @@ class FilterData(DataProcess):
                             except IndexError:
                                 continue
                             except Exception as e:
-                                print(e)
+                                self.logger.exception(e)
                                 continue
-                bak_file = os.path.basename(f) + '_in'
+                bak_file = os.path.join(self.input_path, f)
                 status = self.take_backup(bak_file)
                 if not status:
-                    print("Error : during backup")
+                    self.logger.info("Error : during backup")
 
         else:
-            print("Input is empty. Will wait for 5sec")
+            self.logger.info("Input is empty. Will wait for 5sec")
             self.wait_timeout(5)
 
 
@@ -77,9 +77,9 @@ class TestFilterData(object):
 
     @classmethod
     def setup_class(cls):
-        cls.input_path = "/home/hduser/hadoop/app/Bigdata/input"
-        cls.backup_path = "/home/hduser/hadoop/app/Bigdata/filter_backup"
-        cls.output_path = '/home/hduser/hadoop/app/Bigdata/filter_out'
+        cls.input_path = "/home/latha/my_django/input"
+        cls.backup_path = "/home/latha/my_django/filter_backup"
+        cls.output_path = '/home/latha/my_django/filter_out'
         cls.fd = FilterData(cls.input_path, cls.output_path, cls.backup_path)
 
     def test_filterd(self):

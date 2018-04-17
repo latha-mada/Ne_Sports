@@ -1,8 +1,11 @@
 #!/usr/bin/env python
-
+import logging
 import os
 import subprocess
 import time
+
+
+FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
 
 class DataProcess(object):
@@ -11,6 +14,13 @@ class DataProcess(object):
     moving files etc.
     """
     def __init__(self, input_path, output_path, backup_path):
+
+        handler = logging.StreamHandler()
+        formatter = logging.Formatter(FORMAT)
+        handler.setFormatter(formatter)
+        self.logger = logging.getLogger(__name__)
+        self.logger.addHandler(handler)
+        self.logger.setLevel(logging.INFO)
         self.input_path= input_path
         self.output_path = output_path
         self.backup_path = backup_path
@@ -29,7 +39,7 @@ class DataProcess(object):
             try:
                 os.mkdir(path)
             except Exception as e:
-                print(e)
+                self.logger.exception(e)
                 status = False
         return status
 
@@ -65,7 +75,7 @@ class DataProcess(object):
             proc = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             out, err = proc.communicate()
             file_list = out.splitlines()
-            print("INFO: the files in the {} are : {}".format(path, file_list))
+            self.logger.info("INFO: the files in the {} are : {}".format(path, file_list))
         return file_list
 
     def move_files(self, bak_file, to_dir):
@@ -78,16 +88,14 @@ class DataProcess(object):
         status = False
         bak_file = os.path.abspath(bak_file)
         bak_file_path = os.path.abspath(to_dir)
-        print(bak_file)
         mv_cmd = 'mv {} {}'.format(bak_file, bak_file_path)
-        print(mv_cmd)
         status = self._create_path(to_dir)
         if status:
             move_proc = subprocess.Popen(mv_cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             out, err = move_proc.communicate()
-            print("out = {}".format(out))
+
         files_list = self.check_path(to_dir)
-        if bak_file in files_list:
+        if os.path.basename(bak_file) in files_list:
             status = True
         return status
 
@@ -98,14 +106,13 @@ class DataProcess(object):
         :param to_dir:
         :return: status: boolean
         """
-        status = False
+        self.logger.info("Copying {} to {}".format(file_to_cp, to_dir))
         cp_cmd = 'cp {} {}'.format(file_to_cp, to_dir)
-        print(cp_cmd)
         status = self._create_path(to_dir)
         if status:
             cp_proc = subprocess.Popen(cp_cmd.split(), stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             out, err = cp_proc.communicate()
-            print("out = {}".format(out))
+            self.logger.debug("out = {}".format(out))
         files_list = self.check_path(to_dir)
         if file_to_cp in files_list:
             status = True
@@ -116,22 +123,25 @@ class DataProcess(object):
         copies the file from input folder to backup folder
         :return:
         """
-        status = self.move_files(bak_file, self.backup_path)
+        self.logger.info("Taking backup of the file {}".format(bak_file))
+        return self.move_files(bak_file, self.backup_path)
+
 
     def wait_timeout(self, timeout):
         """
         waits for timeout secs
         :return:
         """
-        time.spleep(timeout)
+        time.sleep(timeout)
 
 
 class TestBaseClass(object):
     """
     Unit tests for testing the DataProcess class
     """
-
-    dp = DataProcess("/home/latha/input", "/home/latha/output", "/home/latha/extra/backup")
+    @classmethod
+    def setup_class(cls):
+        cls.dp = DataProcess("/home/latha/input", "/home/latha/output", "/home/latha/extra/backup")
 
     def test_create_input_path(self):
         status = self.dp.create_input_path()

@@ -1,1 +1,5 @@
-{}
+{
+  "move_raw_data.py::TestMoveRawData::()": true, 
+  "transferd.py::TestTransferData": true, 
+  "transferd.py::TestTransferData::()::test_transferd": true
+}

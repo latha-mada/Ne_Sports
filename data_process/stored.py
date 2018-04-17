@@ -2,7 +2,7 @@
 
 import os
 import pexpect
-from .data_processing import DataProcess
+from data_processing import DataProcess
 import re
 
 
@@ -12,7 +12,7 @@ class StoreData(DataProcess):
     """
 
     def __init__(self, input_path, output_path, backup_path):
-        super(DataProcess, self).__init__(input_path, output_path, backup_path)
+        super(StoreData, self).__init__(input_path, output_path, backup_path)
 
     def store_data(self):
         """
@@ -20,13 +20,13 @@ class StoreData(DataProcess):
         :return:
         """
         hdfs_cmd = "hdfs dfs"
-        print("Starting to load the data from {} to hdfs {}".format(self.input_path, self.output_path))
+        self.logger.info("Starting to load the data from {} to hdfs {}".format(self.input_path, self.output_path))
         files = self.check_path(self.input_path)
         if files:
             status = self.create_backup_path()
             assert status, "Error: could not create backup folder"
             for file in files:
-                print("------------file = ", file)
+                self.logger.info("------------file = ", file)
                 season = re.search(r'.*_(.*)\..*', file).group(1)
                 hdfs_path = os.path.join(self.output_path, season)
                 mkdir = '{} -mkdir -p {}'.format(hdfs_cmd, hdfs_path)
@@ -34,15 +34,15 @@ class StoreData(DataProcess):
                 put_cmd = '{} -put {} {}'.format(hdfs_cmd, file_path, hdfs_path)
                 pexpect.run(mkdir)
                 self.wait_timeout(2)
-                print("Copying {} to hdfs {}".format(file_path, hdfs_path))
+                self.logger.info("Copying {} to hdfs {}".format(file_path, hdfs_path))
                 pexpect.run(put_cmd)
-                print("Copied....")
+                self.logger.info("Copied....")
                 status = self.take_backup(file_path)
                 if not status:
-                    print("Error: could not backup the file {}".format(file_path))
+                    self.logger.info("Error: could not backup the file {}".format(file_path))
                 self.wait_timeout(6)
             else:
-                print("There are no files to copy to hdfs. Checking after 10secs")
+                self.logger.info("There are no files to copy to hdfs. Checking after 10secs")
                 self.wait_timeout(10)
 
 

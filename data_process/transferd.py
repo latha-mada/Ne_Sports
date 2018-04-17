@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
+import logging
 import os
 import pexpect
-from .data_processing import DataProcess
+from data_processing import DataProcess
 
 
 class TransferData(DataProcess):
@@ -11,7 +12,7 @@ class TransferData(DataProcess):
     """
 
     def __init__(self, input_path, output_path, backup_path):
-        super(DataProcess, self).__init__(input_path, output_path, backup_path)
+        super(TransferData, self).__init__(input_path, output_path, backup_path)
 
     def transfer_data(self, remote_user, remote_machine):
         """
@@ -20,7 +21,7 @@ class TransferData(DataProcess):
         :param: remote_machine:string : the ip address/hostname of the hadoop cluster node
         :return:
         """
-        print("Starting to transfer the filtered data to hadoop cluster")
+        self.logger.info("Starting to transfer the filtered data to hadoop cluster")
         files = self.check_path(self.input_path)
         if files:
             status = self.create_output_path()
@@ -30,15 +31,15 @@ class TransferData(DataProcess):
             for file in files:
                 file_path = os.path.join(self.input_path, file)
                 scp_cmd = 'scp {} {}@{}:/{}'.format(file_path, remote_user, remote_machine, self.output_path)
-                print("----- scp_cmd = ", scp_cmd)
+                self.logger.info("----- scp_cmd = ", scp_cmd)
                 pexpect.run(scp_cmd)
-                # take the baack up of the transfered file
+                # take the back up of the transfered file
                 status = self.take_backup(file_path)
                 if not status:
-                    print("Error: Failed to take a backup of the file")
+                    self.logger.info("Error: Failed to take a backup of the file")
                 self.wait_timeout(1)
             else:
-                print("There are no files to transfer. Will wait for 2secs")
+                self.logger.info("There are no files to transfer. Will wait for 2secs")
                 self.wait_timeout(2)
 
 
@@ -49,10 +50,10 @@ class TestTransferData(object):
 
     @classmethod
     def setup_class(cls):
-        cls.input_path = "/home/hduser/hadoop/app/Bigdata/filter_out"
-        cls.backup_path = "/home/hduser/hadoop/app/Bigdata/transfer_backup"
-        cls.output_path = '/home/hduser/hadoop/app/Bigdata/transfer_out'
-        cls.remote_user = 'hduser'
+        cls.input_path = "/home/latha/my_django/filter_out"
+        cls.backup_path = "/home/latha/my_django/ransfer_backup"
+        cls.output_path = '/home/latha/my_django/transfer_out'
+        cls.remote_user = 'latha'
         cls.remote_machine = 'localhost'
         cls.td = TransferData(cls.input_path, cls.output_path, cls.backup_path)
 
