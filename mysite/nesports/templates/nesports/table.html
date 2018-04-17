@@ -1,0 +1,161 @@
+<h3 id="heading">HTML Table</h3>
+<button id="clickButton" onclick="changecolor()">click</button>
+<table id="datatable">
+ <thead>
+  <tr>
+    <th>ID</th>
+    <th>Company</th>
+    <th>Contact</th>
+    <th>Country</th>
+  </tr>
+ </thead>
+ <tbody>
+  <tr>
+    <td>1</td>
+    <td>Alfreds Futterkiste</td>
+    <td>Maria Anders</td>
+    <td>Germany</td>
+  </tr>
+  <tr>
+    <td>2</td>
+    <td>Centro comercial Moctezuma</td>
+    <td>Francisco Chang</td>
+    <td>Mexico</td>
+  </tr>
+  <tr>
+    <td>3</td>
+    <td>Ernst Handel</td>
+    <td>Roland Mendel</td>
+    <td>Austria</td>
+  </tr>
+  <tr>
+    <td>4</td>
+    <td>Island Trading</td>
+    <td>Helen Bennett</td>
+    <td>UK</td>
+  </tr>
+  <tr>
+    <td>5</td>
+    <td>Laughing Bacchus Winecellars</td>
+    <td>Yoshi Tannamuri</td>
+    <td>Canada</td>
+  </tr>
+  <tr>
+    <td>6</td>
+    <td>Magazzini Alimentari Riuniti</td>
+    <td>Giovanni Rovelli</td>
+    <td>Italy</td>
+  </tr>
+ </tbody>
+</table>
+<table id="dytable">
+<tbody id="tbody">
+</tbody>
+</table>
+
+<button onclick="myFunction()">Try it</button>
+
+<script>
+function myFunction() {
+	var x = document.getElementById("heading");
+    x.style.color = "red";
+    var tab1 = document.getElementById("tbody");
+    var x = "{{data}}"
+    var y = eol.split(x);
+    tab += "<tr>";
+    for (var i = 0; i < y.length; ++i)
+    {
+    	tab += "<td>"+y[i]+"</td>";
+    }
+    tab += "</tr>";
+    tab1.innerHTML = tab;	
+   	}
+   	
+</script>
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
+}
+</style>
+</head>
+{% load static %}
+
+{% block content %}
+<div class="block" style="background-image: url('/static/images/celtics.jpg');">
+<h2 style="color: green; text-shadow: 3px 2px black"> Boston Celtics</h2>
+
+</div>
+  
+  
+{% endblock %}
+<body>
+
+
+<input type="button" value="Generate Table" onclick="GenerateTable()" />
+<hr />
+<div id="dvTable">
+</div>
+
+<script type="text/javascript">
+function GenerateTable() {
+    //Build an array containing Customer records.
+    var customers = new Array();
+    customers.push(["Customer Id", "Name", "Country"]);
+    customers.push([1, "John Hammond", "United States"]);
+    customers.push([2, "Mudassar Khan", "India"]);
+    customers.push([3, "Suzanne Mathews", "France"]);
+    customers.push([4, "Robert Schidner", "Russia"]);
+    var myarr = "{{data}}";
+    var elements = [{% for x in data %}'{{ x|escapejs }}',{% endfor %}]
+ 
+    //Create a HTML Table element.
+    var table = document.createElement("TABLE");
+    table.border = "1";
+ 
+    //Get the count of columns.
+    var columnCount = customers[0].length;
+ 
+    //Add the header row.
+    var row = table.insertRow(-1);
+    for (var i = 0; i < columnCount; i++) {
+        var headerCell = document.createElement("TH");
+        headerCell.innerHTML = customers[0][i];
+        row.appendChild(headerCell);
+    }
+ 
+    //Add the data rows.
+    for (var i = 1; i < customers.length; i++) {
+        row = table.insertRow(-1);
+        for (var j = 0; j < columnCount; j++) {
+            var cell = row.insertCell(-1);
+            cell.innerHTML = customers[i][j];
+        }
+    }
+ 
+    var dvTable = document.getElementById("dvTable");
+    dvTable.innerHTML = "";
+    dvTable.appendChild(table);
+}
+</script>
+
+</body>
+
+</html>

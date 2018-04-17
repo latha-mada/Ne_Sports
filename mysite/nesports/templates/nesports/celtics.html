@@ -1,0 +1,59 @@
+{% extends "nesports/header.html" %} 
+{% load static %}
+
+{% block content %}
+<h1 class="logo" style="color: #006622; text-shadow: 3px 2px white"> Boston Celtics</h1>
+<div class="block" style="background-image: url('/static/images/celtics.jpg');">
+<h2></h2>
+</div>
+<form action="{% url 'analyze' %}" method="post">
+  {% csrf_token %}
+    <select id="granularity" name="type">
+      <option value="Players">{{ gran }}</option>
+      <option value="Players">player</option>
+      <option value="Teams">team</option>
+      <option value="League">league</option>
+    </select>
+    <select id="year" name="year">
+      <option value="2017">{{ year }}</option>
+      <option value="2017">2017</option>
+      <option value="2016">2016</option>
+      <option value="2015">2015</option>
+      <option value="2014">2014</option>
+      <option value="2013">2013</option>
+    </select>
+  <select id="playaggr" name="play">
+    <option value="touchdowns">{{ play }}</option>
+    <option value="touchdowns">touchdowns</option>
+    <option value="two_pt">twp_pt</option>
+    <option value="rushyards">rushyards</option>
+    <option value="passyards">passyards</option>
+  </select>
+  <input type="submit" name="submit">
+
+<table id="dytable">
+  <thead>
+  <tr><td>Team</td><td>Player</td><td>Aggregate</td></tr>
+  </thead>
+  {% for row in nfl %}
+  <tr>
+    <td>{{ row.team }}</td>
+    <td>{{ row.player }}</td>
+    {% if row.touchdowns %}
+      <td>{{ row.touchdowns }}</td>
+    {% endif %}
+    {% if row.passyards %}
+      <td>{{ row.passyards }}</td>
+    {% endif %}
+    {% if row.rushyards %}
+      <td>{{ row.rushyards }}</td>
+    {% endif %}
+    {% if row.two_pt %}
+      <td>{{ row.two_pt }}</td>
+    {% endif %}
+
+  </tr>
+  {% endfor %}
+</table>
+</form>
+{% endblock %}

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {
+    font-family: "Lato", sans-serif;
+    margin-top: 0px;
+    background-color: #b3b3cc;
+}
+
+td {width:40%}
+td img { display:block; width:100%; height:100%;}
+
+.sidenav {
+    height: 100%;
+    width: 200px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color:  #b3b3cc;
+    overflow-x: hidden;
+    padding-top: 0px;
+}
+
+.sidenav a {
+    padding: 6px 6px 6px 32px;
+    text-decoration: none;
+    font-size: 30px;
+    font-weight: bold;
+    text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+    color: #ffffef;
+    display: block;
+}
+#submit{
+        font-weight: bold;
+        }
+#top{
+    background-color: #a3a3c2;
+    }
+.sidenav a.sidetabs{
+        border-style: outset;
+        padding-top:30px;
+        }
+h1.logo {width: 100%;
+		 height: 100%;
+		 color:#3366cc;
+		 font-size: 2em;
+		 padding-top: 0px;
+		 padding-bottom: 50px;
+		 text-align: center;
+		 display: block;
+		 background-image: url('/static/images/nesports_logo.png');
+		 background-position: top right;
+		 background-repeat: no-repeat;
+		 }
+select {
+      font-weight: bold;
+      font-size:1em;
+      }
+
+h2 {
+	color:red;
+	text-align: center;
+	height:50%;
+	padding-top: 0px;
+	padding-bottom: 150px;
+	font-size: 2em;
+	}
+label {width:100px;
+		display: inline-block;
+		text-align: right;
+		float: left;
+		margin-right: 20px}
+select {
+		width: 200px;
+		padding-left: 5px;
+		left: 50px}
+
+.sidenav a:hover {
+    color: #a3a3c2;
+}
+
+.main {
+    margin-left: 200px; /* Same as the width of the sidenav */
+    margin-top:0px
+}
+
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 0px;}
+  .sidenav a {font-size: 18px;}
+}
+
+#dytable td, #dytable th {
+    border: 1px solid #000;
+    padding: 8px;
+}
+
+#dytable tr:nth-child(even){background-color: #b3b3cc;}
+
+#dytable tr:hover {background-color: #ddd;}
+
+#dytable th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #7b817b;
+    color: white;
+}
+</style>
+<script type="text/javascript" src="/static/js/jquery-3.3.1.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css"/>
+<script type="text/javascript" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>"
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#dytable').DataTable({
+	"lengthChange": false
+	});
+});
+</script>
+</head>
+<body>
+<div class="sidenav">
+  <a class="sidetabs" href="{% url 'index' %}">Home</a>
+  <a class="sidetabs" href="{% url 'patriots' %}">Patriots</a>
+  <a class="sidetabs" href="{% url 'celtics' %}">Celtics</a>
+  <a class="sidetabs" href="{% url 'bruins' %}">Bruins</a>
+  <a class="sidetabs" href="{% url 'redsox' %}">RedSox</a>
+
+</div>
+<div class="main">
+  {% block content %}
+  {% endblock %}
+     
+</div>
+
+</body>
+</html> 

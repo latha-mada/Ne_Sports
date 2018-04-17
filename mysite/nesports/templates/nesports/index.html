@@ -1,0 +1,29 @@
+{% extends "nesports/header.html" %} 
+{% load static %}
+
+
+{% block content %}
+<h1 class="logo">New England Sports Analytics</h1>  
+  
+  <table style="width:75%; height:50%" align="center" id="nesportsImagesTable">
+  <tr>
+  <td>
+  <a href="{% url 'redsox' %}"><img  src="{% static '/images/redsox.jpg' %}" alt="Redsox"></a>
+  
+  </td>
+  <td>
+    <a href="{% url 'patriots' %}" ><img src="{% static '/images/patsplayers.jpg' %}" alt="Patriots"></a>
+  
+  </td>
+  </tr>
+  <tr>
+  <td>
+    <a href="{% url 'bruins' %}" ><img src="{% static '/images/bruins.jpg' %}" alt="Bruins"></a>
+  </td>
+  <td>
+    <a href="{% url 'celtics' %}" ><img src="{% static '/images/celtics.jpg' %}" alt="Celtics"></a>
+  </td>
+  </tr>
+  </table>
+  
+{% endblock %}
